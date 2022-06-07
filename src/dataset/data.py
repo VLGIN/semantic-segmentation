@@ -28,5 +28,5 @@ class ImageDataset(Dataset):
         return {"image": return_img, "smnt": return_smnt}
 
     def __len__(self):
-        return len(self.images)
+        return len(self.data)
 
