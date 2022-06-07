@@ -19,8 +19,6 @@ class DataSource():
                                     path_to_folder_data: str=None,
                                     ):
         assert os.path.exists(path_to_folder_data), "Invalid folder path"
-        folder_list = os.listdir(path_to_folder_data)
-        folder_list = [item for item in folder_list if os.path.isdir(os.path.join(path_to_folder_data, item))]
 
         data = Cityscapes(path_to_folder_data,split ='train',target_type='semantic')
         train_dataset = ImageDataset(data = data )
