@@ -5,7 +5,7 @@ import sys
 from segmentation_models_pytorch import Unet
 import torch
 from torch import nn
-from tqdm.notebook import tqdm
+from tqdm import tqdm
 from torch.utils.data import DataLoader, Dataset
 from torch import optim
 
