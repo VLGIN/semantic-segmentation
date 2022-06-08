@@ -13,13 +13,17 @@ class CityScapesDataset(Dataset):
     def __init__(self, path_folder: str,
                  split: str = 'train',
                  mode: str = 'fine',
-                 augment: bool = False,
+                 resize_mode: bool = False,
                  width: int = 256,
                  height: int = 256):
         self.mode = 'gtFine' if mode == 'fine' else 'gtCoarse'
         self.images_dirs = os.path.join(path_folder, 'leftImg8bit', split)
         self.target_dirs = os.path.join(path_folder, self.mode, split)
-        self.augment = augment
+        self.resize_mode = resize_mode
+        if self.resize_mode:
+            logger.info("Turn on resize mode")
+        else:
+            logger.info("Turn of resize model")
         self.width = width
         self.height = height
         self.image_paths, self.target_paths = [], []
@@ -60,6 +64,7 @@ class CityScapesDataset(Dataset):
             33: 7,  # bicycle
             -1: 7  # licenseplate
         }
+        self.num_class = len(set(self.map_labels.values()))
         logger.info(f"Start loading path for {split}")
         for city in os.listdir(self.images_dirs):
             img_dir = os.path.join(self.images_dirs, city)
@@ -83,8 +88,9 @@ class CityScapesDataset(Dataset):
         image = Image.open(self.image_paths[idx]).convert('RGB')
         target = Image.open(self.target_paths[idx]).convert('L')
 
-        image = torch_f.resize(image, size=[self.width, self.height], interpolation=torch_f.InterpolationMode.BILINEAR)
-        target = torch_f.resize(target, size=[self.width, self.height], interpolation=torch_f.InterpolationMode.NEAREST)
+        if self.resize_mode:
+            image = torch_f.resize(image, size=[self.width, self.height], interpolation=torch_f.InterpolationMode.BILINEAR)
+            target = torch_f.resize(target, size=[self.width, self.height], interpolation=torch_f.InterpolationMode.NEAREST)
 
         target = torch.from_numpy(np.array(target, dtype=np.uint8))
         image = torch_f.to_tensor(image)

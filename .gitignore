@@ -114,4 +114,4 @@ dmypy.json
 .pyre/
 
 .idea
-assert/data
+assets/data
