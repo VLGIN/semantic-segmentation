@@ -16,7 +16,8 @@ parser.add_argument('--height', type=int, default=256)
 parser.add_argument('--width', type=int, default=256)
 parser.add_argument('--debug_mode', default=False, type=lambda x: x.lower() == 'true')
 parser.add_argument('--continue_training', type=int, default=False)
-parser.add_argument('--model_pretrain', type=str, default='imagenet')
+parser.add_argument('--encoder_name', type=str, default='resnet34')
+parser.add_argument('--encoder_weights', type=str, default='imagenet')
 
 arg = parser.parse_args()
 data_source = DataSource.create_datasource(
@@ -27,8 +28,8 @@ data_source = DataSource.create_datasource(
 )
 
 model = Unet(
-    encoder_name="resnet34",
-    encoder_weights=arg.model_pretrain,
+    encoder_name=arg.encoder_name,
+    encoder_weights=arg.encoder_weights,
     in_channels=3,
     classes=data_source.train_dataset.num_class
 )
