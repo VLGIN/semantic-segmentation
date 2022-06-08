@@ -75,9 +75,9 @@ class UnetTrainer(TrainerBase, ABC):
         val_loss = 0
         for idx, batch in tqdm(enumerate(self.val_loader), total=len(self.val_loader)):
             image = batch['image'].to(self.device)
-            mask = batch['mask'].to(self.device)
+            mask = batch['mask'].type(torch.LongTensor).to(self.device)
             out = self.model(image)
-            loss = self.loss_fn(out, mask.type(torch.LongTensor))
+            loss = self.loss_fn(out, mask)
             val_loss += loss.item()
         return val_loss / len(self.val_loader)
 
