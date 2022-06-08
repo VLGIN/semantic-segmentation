@@ -14,6 +14,7 @@ parser.add_argument('--path_save', type=str, default='assets/model')
 parser.add_argument('--resize_mode', default=False, type=lambda x: x.lower() == 'true')
 parser.add_argument('--height', type=int, default=256)
 parser.add_argument('--width', type=int, default=256)
+parser.add_argument('--debug_mode', default=False, type=lambda x: x.lower() == 'true')
 parser.add_argument('--continue_training', type=int, default=False)
 
 arg = parser.parse_args()

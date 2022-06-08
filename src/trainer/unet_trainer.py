@@ -92,6 +92,9 @@ class UnetTrainer(TrainerBase, ABC):
             loss = self.loss_fn(output, mask)
             self.optimizer.zero_grad()
             loss.backward()
+            if self.arg.debug_mode:
+                logger.info(f"Step: {idx} --- Loss: {loss.item()}")
+
             self.optimizer.step()
             train_loss += loss.item()
         return train_loss / len(self.train_loader)
