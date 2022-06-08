@@ -24,6 +24,7 @@ class UnetTrainer(TrainerBase, ABC):
         self.arg = arg
         self.model = model
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.model.to(self.device)
 
         if self.arg.is_train:
             self.train_loader = self.make_loader(data_source.train_dataset)
