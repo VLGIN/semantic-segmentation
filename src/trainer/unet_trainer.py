@@ -77,7 +77,7 @@ class UnetTrainer(TrainerBase, ABC):
             image = batch['image'].to(self.device)
             mask = batch['mask'].to(self.device)
             out = self.model(image)
-            loss = self.loss_fn(out, mask.dtype(torch.LongTensor))
+            loss = self.loss_fn(out, mask.type(torch.LongTensor))
             val_loss += loss.item()
         return val_loss / len(self.val_loader)
 
