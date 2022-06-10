@@ -115,3 +115,5 @@ dmypy.json
 
 .idea
 assets/data
+.idea/misc.xml
+.idea/semantic-segmentation.iml
