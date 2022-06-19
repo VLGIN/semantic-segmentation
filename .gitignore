@@ -117,3 +117,6 @@ dmypy.json
 assets/data
 .idea/misc.xml
 .idea/semantic-segmentation.iml
+
+#multi media file
+.jpg
