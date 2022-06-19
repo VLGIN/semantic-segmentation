@@ -119,4 +119,4 @@ assets/data
 .idea/semantic-segmentation.iml
 
 #multi media file
-.jpg
+*.jpg
