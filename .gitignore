@@ -121,3 +121,8 @@ assets/data
 #multi media file
 *.jpg
 *.mp4
+
+.DS_Store
+src/app/static/
+src/app/model/
+*.ipynb
