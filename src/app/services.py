@@ -154,8 +154,8 @@ async def upload_image(file: UploadFile = File(...)):
         f.write(content)
     image = Image.open("static/tmp." + open_part).convert("RGB")
     output = transform_image(image)
-    output.save("static/output.png")
-    #return file static/output.png
+    output.save("static/image/output.png")
+    return FileResponse(path="./static/image/output.png");
 
 @app.post("/upload_video/")
 async def upload_video(file: UploadFile = File(...)):
@@ -169,13 +169,13 @@ async def upload_video(file: UploadFile = File(...)):
         image = Image.open(f"static/frame{i}.jpg").convert("RGB")
         output = transform_image(image)
         output.save(f"static/video_result{i}.png")
-    writer = cv2.VideoWriter("static/outputvideo.mp4",cv2.VideoWriter_fourcc(*"MP4V"),30,(512,512))
+    writer = cv2.VideoWriter("static/video/outputvideo.mp4",cv2.VideoWriter_fourcc(*"MP4V"),30,(512,512))
     for i in range(num_frames):
         image = cv2.imread(f"static/video_result{i}.png", cv2.IMREAD_COLOR)
         writer.write(image)
     writer.release()
 
-    # return file static/outputvideo.mp4
+    return FileResponse(path="./static/video/outputvideo.mp4")
 
 @app.get("/get_file/{file_name}")
 def get_file(file_name: str):
