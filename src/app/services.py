@@ -164,7 +164,10 @@ async def upload_image(file: UploadFile = File(...)):
     image = Image.open("static/tmp." + open_part).convert("RGB")
     output = transform_image(image)
     output.save("static/output.png")
-    return "/get_file/output.png"
+    rs = {}
+    rs["original_image"] = "/get_file/tmp." + open_part
+    rs["result"] = "/get_file/output.png"
+    return rs
 
 @app.post("/upload_video/")
 async def upload_video(file: UploadFile = File(...)):
@@ -183,8 +186,10 @@ async def upload_video(file: UploadFile = File(...)):
         image = cv2.imread(f"static/video_result{i}.png", cv2.IMREAD_COLOR)
         writer.write(image)
     writer.release()
-
-    return "/get_file/outputvideo.mp4"
+    rs = {}
+    rs["original_video"] = "/get_file/video_temp."+open_part
+    rs["result"] = "/get_file/outputvideo.mp4"
+    return rs
 
 @app.get("/get_file/{file_name}")
 def get_file(file_name: str):
