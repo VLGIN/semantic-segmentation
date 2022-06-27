@@ -155,7 +155,7 @@ async def upload_image(file: UploadFile = File(...)):
     image = Image.open("static/tmp." + open_part).convert("RGB")
     output = transform_image(image)
     output.save("static/image/output.png")
-    return FileResponse(path="./static/image/output.png");
+    return "/get_file/output.png"
 
 @app.post("/upload_video/")
 async def upload_video(file: UploadFile = File(...)):
@@ -175,7 +175,7 @@ async def upload_video(file: UploadFile = File(...)):
         writer.write(image)
     writer.release()
 
-    return FileResponse(path="./static/video/outputvideo.mp4")
+    return "/get_file/outputvideo.mp4"
 
 @app.get("/get_file/{file_name}")
 def get_file(file_name: str):
