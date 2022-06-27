@@ -114,4 +114,17 @@ dmypy.json
 .pyre/
 
 .idea
+assets/data
+.idea/misc.xml
+.idea/semantic-segmentation.iml
+
+#multi media file
+*.jpg
+*.mp4
+
+.DS_Store
+src/app/static/
+src/app/model/
+*.ipynb
+=======
 assets
