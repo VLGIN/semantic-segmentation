@@ -22,10 +22,11 @@ parser.add_argument('--encoder_weights', type=str, default='imagenet')
 arg = parser.parse_args()
 data_source = DataSource.create_datasource(
     path_folder=arg.path_folder,
-    resize_mode=arg.resize_mode,
-    height=arg.height,
-    width=arg.width
+    resize_mode=arg.resize_mode, # True
+    height=arg.height, # 1024
+    width=arg.width # 512
 )
+
 
 model = Unet(
     encoder_name=arg.encoder_name,

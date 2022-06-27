@@ -126,3 +126,5 @@ assets/data
 src/app/static/
 src/app/model/
 *.ipynb
+=======
+assets
