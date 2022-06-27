@@ -11,11 +11,20 @@ from segmentation_models_pytorch import Unet
 from PIL import Image
 from torchvision.transforms import functional as torch_f
 from torchvision import transforms as T
+from fastapi.middleware.cors import CORSMiddleware
 
 CONFIG = dotenv_values("./.env")
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins="*",
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
+
 
 map_labels = {
             0: 0,  # unlabeled
@@ -154,7 +163,7 @@ async def upload_image(file: UploadFile = File(...)):
         f.write(content)
     image = Image.open("static/tmp." + open_part).convert("RGB")
     output = transform_image(image)
-    output.save("static/image/output.png")
+    output.save("static/output.png")
     return "/get_file/output.png"
 
 @app.post("/upload_video/")
@@ -179,7 +188,7 @@ async def upload_video(file: UploadFile = File(...)):
 
 @app.get("/get_file/{file_name}")
 def get_file(file_name: str):
-    file_path = "./static/image/" + file_name
+    file_path = "./static/" + file_name
     return FileResponse(path=file_path)
 
 if __name__ == "__main__":
