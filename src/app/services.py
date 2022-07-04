@@ -201,7 +201,7 @@ async def upload_video(file: UploadFile = File(...)):
         image = Image.open(f"static/frame{i}.jpg").convert("RGB")
         output = transform_image(image)
         output.save(f"static/video_result{i}.png")
-    writer = cv2.VideoWriter("static/video/outputvideo.mp4",cv2.VideoWriter_fourcc(*"MP4V"),30,(512,512))
+    writer = cv2.VideoWriter("static/outputvideo.mp4",cv2.VideoWriter_fourcc(*"MP4V"),30,(512,512))
     for i in range(num_frames):
         image = cv2.imread(f"static/video_result{i}.png", cv2.IMREAD_COLOR)
         writer.write(image)
