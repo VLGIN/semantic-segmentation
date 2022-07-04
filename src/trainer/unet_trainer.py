@@ -84,8 +84,8 @@ class UnetTrainer(TrainerBase, ABC):
             out = self.model(image)
             loss = self.loss_fn(out, mask)
             val_loss += loss.item()
-            val_iou_score += self.iou_fn(out.tranpose(0, 1),
-                                         batch['sample'].type(torch.LongTensor).to(self.device))
+            val_iou_score += self.iou_fn(out.transpose(0, 1),
+                                         batch['mask'].type(torch.LongTensor).to(self.device))
         return val_loss / len(self.val_loader), val_iou_score / len(self.val_loader)
 
     def train_one_epoch(self, epoch: int, **kwargs):
@@ -105,8 +105,8 @@ class UnetTrainer(TrainerBase, ABC):
 
             self.optimizer.step()
             train_loss += loss.item()
-            train_iou_score += self.iou_fn(output.tranpose(0, 1),
-                                           batch['sample'].type(torch.LongTensor).to(self.device))
+            train_iou_score += self.iou_fn(output.transpose(0, 1),
+                                           batch['mask'].type(torch.LongTensor).to(self.device))
 
         return train_loss / len(self.train_loader), train_iou_score / len(self.train_loader)
 
@@ -114,7 +114,8 @@ class UnetTrainer(TrainerBase, ABC):
         for epoch in range(self.arg.num_epoch):
             train_loss, train_iou = self.train_one_epoch(epoch)
             val_loss, val_iou = self.evaluate()
-            logger.info(f"Epoch: {epoch} --- Train loss: {train_loss} --- Val loss: {val_loss}")
+            logger.info(f"Epoch: {epoch} --- Train loss: {train_loss} Train IOU: {train_iou} --- "
+                        f"Val loss: {val_loss} Val IOU: {val_iou}")
             self.history['train_loss'].append(train_loss)
             self.history['train_iou'].append(train_iou)
             self.history['val_loss'].append(val_loss)
