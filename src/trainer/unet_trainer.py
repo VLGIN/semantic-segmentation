@@ -114,7 +114,8 @@ class UnetTrainer(TrainerBase, ABC):
         for epoch in range(self.arg.num_epoch):
             train_loss, train_iou = self.train_one_epoch(epoch)
             val_loss, val_iou = self.evaluate()
-            logger.info(f"Epoch: {epoch} --- Train loss: {train_loss} --- Val loss: {val_loss}")
+            logger.info(f"Epoch: {epoch} --- Train loss: {train_loss} Train IOU: {train_iou} --- "
+                        f"Val loss: {val_loss} Val IOU: {val_iou}")
             self.history['train_loss'].append(train_loss)
             self.history['train_iou'].append(train_iou)
             self.history['val_loss'].append(val_loss)
