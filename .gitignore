@@ -125,6 +125,6 @@ assets/data
 .DS_Store
 src/app/static/
 src/app/model/
-assets/
-*model*
 *.ipynb
+=======
+assets
