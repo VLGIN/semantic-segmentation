@@ -1,5 +1,7 @@
+from typing import List
 import uvicorn
 import torch
+<<<<<<< HEAD
 import cv2
 
 from fastapi import FastAPI, File, UploadFile, Request, Response, Header
@@ -13,6 +15,9 @@ from torchvision.transforms import functional as torch_f
 from torchvision import transforms as T
 from fastapi.middleware.cors import CORSMiddleware
 
+from pydantic import BaseModel, Field
+from typing import List
+
 CONFIG = dotenv_values("./.env")
 
 app = FastAPI()
@@ -25,6 +30,21 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+class InputImage(BaseModel):
+    image: List
+
+@app.on_event('startup')
+async def setup():
+    global segmentor
+    encoder_name = CONFIG['ENCODER_NAME']
+    encoder_weights = CONFIG['ENCODER_WEIGHTS']
+    in_channels = CONFIG['IN_CHANNELS']
+    classes = CONFIG['CLASSES']
+    state_dict_path = CONFIG['MODEL_PATH']
+    segmentor = Unet(encoder_name=encoder_name, encoder_weights=encoder_weights,\
+        in_channels=in_channels, classes=classes)
+    state_dict = torch.load(state_dict_path, map_location='cpu')
+    segmentor.load_state_dict(state_dict)
 
 map_labels = {
             0: 0,  # unlabeled
@@ -191,10 +211,32 @@ async def upload_video(file: UploadFile = File(...)):
     rs["result"] = "/get_file/outputvideo.mp4"
     return rs
 
+<<<<<<< HEAD
 @app.get("/get_file/{file_name}")
 def get_file(file_name: str):
     file_path = "./static/" + file_name
     return FileResponse(path=file_path)
+=======
+@app.post("/segment/image")
+def segment(inputImage: InputImage):
+    # preprocess input
+    image = inputImage.image_path
+    # read image
+    output = segmentor(image)
+    
+@app.post("/segment/video")
+def segment(inputImage: InputImage):
+    # preprocess input
+    video_path = inputImage.image_path
+    # read video and split video
+    video = video_path
+    result_list = []
+    for item in video:
+        result_list.append(segmentor(item).detach().cpu().numpy())
+    # concate frames to video
+    return video
+
+>>>>>>> e630f9b (resolve conflict)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="localhost", port=8001)
