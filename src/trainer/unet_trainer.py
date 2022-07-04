@@ -84,7 +84,7 @@ class UnetTrainer(TrainerBase, ABC):
             out = self.model(image)
             loss = self.loss_fn(out, mask)
             val_loss += loss.item()
-            val_iou_score += self.iou_fn(out.tranpose(0, 1),
+            val_iou_score += self.iou_fn(out.transpose(0, 1),
                                          batch['sample'].type(torch.LongTensor).to(self.device))
         return val_loss / len(self.val_loader), val_iou_score / len(self.val_loader)
 
@@ -105,7 +105,7 @@ class UnetTrainer(TrainerBase, ABC):
 
             self.optimizer.step()
             train_loss += loss.item()
-            train_iou_score += self.iou_fn(output.tranpose(0, 1),
+            train_iou_score += self.iou_fn(output.transpose(0, 1),
                                            batch['sample'].type(torch.LongTensor).to(self.device))
 
         return train_loss / len(self.train_loader), train_iou_score / len(self.train_loader)
