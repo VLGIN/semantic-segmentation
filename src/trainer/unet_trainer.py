@@ -86,7 +86,7 @@ class UnetTrainer(TrainerBase, ABC):
             val_loss += loss.item()
             val_iou_score += self.iou_fn(out.transpose(0, 1),
                                          batch['mask'].type(torch.LongTensor).to(self.device)).item()
-        return val_loss / len(self.val_loader), val_iou_score / len(self.val_loader)
+        return val_loss / len(self.val_loader), val_iou_score / len(self.train_loader.dataset)
 
     def train_one_epoch(self, epoch: int, **kwargs):
         logger.info(f"Training epoch: {epoch}")
@@ -108,7 +108,7 @@ class UnetTrainer(TrainerBase, ABC):
             train_iou_score += self.iou_fn(output.transpose(0, 1),
                                            batch['mask'].type(torch.LongTensor).to(self.device)).item()
 
-        return train_loss / len(self.train_loader), train_iou_score / len(self.train_loader)
+        return train_loss / len(self.train_loader), train_iou_score / len(self.train_loader.dataset)
 
     def fit(self, **kwargs):
         for epoch in range(self.arg.num_epoch):
