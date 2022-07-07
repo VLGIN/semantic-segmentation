@@ -11,6 +11,7 @@ from tqdm import tqdm
 import pickle
 from torch.utils.data import DataLoader, Dataset
 from torch import optim
+from torchmetrics import JaccardIndex
 
 from src.dataset import DataSource
 from src.trainer import TrainerBase
@@ -29,7 +30,7 @@ class UnetTrainer(TrainerBase, ABC):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model.to(self.device)
         self.history = defaultdict(list)
-        self.iou_fn = IoU()
+        self.iou_fn = JaccardIndex(num_classes=8).to(self.device)
 
         if self.arg.is_train:
             self.train_loader = self.make_loader(data_source.train_dataset)
