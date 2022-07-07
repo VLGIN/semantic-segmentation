@@ -8,6 +8,7 @@ from segmentation_models_pytorch.utils.metrics import IoU
 import torch
 from torch import nn
 from tqdm import tqdm
+import pickle
 from torch.utils.data import DataLoader, Dataset
 from torch import optim
 
@@ -84,8 +85,11 @@ class UnetTrainer(TrainerBase, ABC):
             out = self.model(image)
             loss = self.loss_fn(out, mask)
             val_loss += loss.item()
-            val_iou_score += self.iou_fn(out.transpose(0, 1),
+            iou_score = self.iou_fn(torch.argmax(out, dim=1),
                                          batch['mask'].type(torch.LongTensor).to(self.device)).item()
+            if iou_score < 0:
+                print(f"Val score: {iou_score}")
+            val_iou_score += iou_score
         return val_loss / len(self.val_loader), val_iou_score / len(self.val_loader.dataset)
 
     def train_one_epoch(self, epoch: int, **kwargs):
@@ -105,8 +109,11 @@ class UnetTrainer(TrainerBase, ABC):
 
             self.optimizer.step()
             train_loss += loss.item()
-            train_iou_score += self.iou_fn(output.transpose(0, 1),
-                                           batch['mask'].type(torch.LongTensor).to(self.device)).item()
+            iou_score = self.iou_fn(torch.argmax(output, dim=1),
+                                    batch['mask'].type(torch.LongTensor).to(self.device)).item()
+            if iou_score < 0:
+                print(f"Train score: {iou_score}")
+            train_iou_score += iou_score
 
         return train_loss / len(self.train_loader), train_iou_score / len(self.train_loader.dataset)
 
@@ -126,4 +133,3 @@ class UnetTrainer(TrainerBase, ABC):
                 self.save_model(epoch)
                 plot_loss(self.history, path_save=self.path_save)
                 plot_iou_score(self.history, path_save=self.path_save)
-
