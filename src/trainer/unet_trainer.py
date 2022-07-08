@@ -91,7 +91,7 @@ class UnetTrainer(TrainerBase, ABC):
             if iou_score < 0:
                 print(f"Val score: {iou_score}")
             val_iou_score += iou_score
-        return val_loss / len(self.val_loader), val_iou_score / len(self.val_loader.dataset)
+        return val_loss / len(self.val_loader), val_iou_score / len(self.val_loader)
 
     def train_one_epoch(self, epoch: int, **kwargs):
         logger.info(f"Training epoch: {epoch}")
@@ -116,7 +116,7 @@ class UnetTrainer(TrainerBase, ABC):
                 print(f"Train score: {iou_score}")
             train_iou_score += iou_score
 
-        return train_loss / len(self.train_loader), train_iou_score / len(self.train_loader.dataset)
+        return train_loss / len(self.train_loader), train_iou_score / len(self.train_loader)
 
     def fit(self, **kwargs):
         for epoch in range(self.arg.num_epoch):
