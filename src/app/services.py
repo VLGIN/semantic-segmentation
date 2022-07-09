@@ -103,7 +103,8 @@ mappingrgb = {
         }
 
 def transform_image(image):
-    image = torch_f.resize(image, size=[int(CONFIG['IMG_HEIGHT']), int(CONFIG['IMG_WIDTH'])], interpolation=torch_f.InterpolationMode.BILINEAR)
+    image = torch_f.resize(image, size=[int(CONFIG['IMG_HEIGHT']), int(CONFIG['IMG_WIDTH'])], 
+                            interpolation=torch_f.InterpolationMode.BILINEAR)
     image = torch_f.to_tensor(image)
     output = segmentor(image.unsqueeze(0))
     output = output.argmax(dim=1)
@@ -129,13 +130,15 @@ def class_to_rgb(mask):
     return rgbimg
 
 def split_video(video_path):
+    print("start read")
     vidcap = cv2.VideoCapture(video_path)
+    print("end read")
     success,image = vidcap.read()
     count = 0
     success = True
-    while success:
+    while success and count < 1000:
         success,image = vidcap.read()
-        cv2.imwrite("static/frame%d.jpg" % count, image)     # save frame as JPEG file
+        cv2.imwrite("static/tmp/frame%d.jpg" % count, image)     # save frame as JPEG file
         if cv2.waitKey(10) == 27:                     # exit if Escape is hit
             break
         count += 1
@@ -159,9 +162,9 @@ async def setup():
 async def upload_image(file: UploadFile = File(...)):
     open_part = file.filename.split(".")[-1]
     content = await file.read()
-    with open("static/tmp." + open_part, "wb") as f:
+    with open("static/tmp/tmp." + open_part, "wb") as f:
         f.write(content)
-    image = Image.open("static/tmp." + open_part).convert("RGB")
+    image = Image.open("static/tmp/tmp." + open_part).convert("RGB")
     output = transform_image(image)
     output.save("static/output.png")
     rs = {}
@@ -173,22 +176,28 @@ async def upload_image(file: UploadFile = File(...)):
 async def upload_video(file: UploadFile = File(...)):
     open_part = file.filename.split(".")[-1]
     content = await file.read()
-    with open("static/video_temp."+open_part, "wb") as f:
+    with open("static/tmp/video_temp."+open_part, "wb") as f:
         f.write(content)
-    num_frames = split_video("static/video_temp."+open_part)
+    num_frames = split_video("static/tmp/video_temp."+open_part)
     output = []
     for i in range(num_frames):
-        image = Image.open(f"static/frame{i}.jpg").convert("RGB")
+        image = Image.open(f"static/tmp/frame{i}.jpg").convert("RGB")
         output = transform_image(image)
-        output.save(f"static/video_result{i}.png")
-    writer = cv2.VideoWriter("static/outputvideo.mp4",cv2.VideoWriter_fourcc(*"MP4V"),30,(512,512))
+
+        output.save(f"static/tmp/video_result{i}.png")
+    writer = cv2.VideoWriter("static/outputvideo.avi",cv2.VideoWriter_fourcc(*"jpeg"),5,(1024,512))
+
     for i in range(num_frames):
-        image = cv2.imread(f"static/video_result{i}.png", cv2.IMREAD_COLOR)
+        image = cv2.imread(f"static/tmp/video_result{i}.png")
+        print(image.shape)
+        image = cv2.resize(image, (1024, 512))
+        print(image.shape)
         writer.write(image)
+    cv2.destroyAllWindows()
     writer.release()
     rs = {}
     rs["original_video"] = "/get_file/video_temp."+open_part
-    rs["result"] = "/get_file/outputvideo.mp4"
+    rs["result"] = "/get_file/outputvideo.avi"
     return rs
 
 @app.get("/get_file/{file_name}")
