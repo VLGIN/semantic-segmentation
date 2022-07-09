@@ -138,10 +138,11 @@ def split_video(video_path):
     success = True
     while success and count < 1000:
         success,image = vidcap.read()
-        cv2.imwrite("static/tmp/frame%d.jpg" % count, image)     # save frame as JPEG file
-        if cv2.waitKey(10) == 27:                     # exit if Escape is hit
-            break
-        count += 1
+        if success:
+            cv2.imwrite("static/tmp/frame%d.jpg" % count, image)     # save frame as JPEG file
+            if cv2.waitKey(10) == 27:                     # exit if Escape is hit
+                break
+            count += 1
     vidcap.release()
     return count
 
