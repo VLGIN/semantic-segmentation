@@ -203,7 +203,10 @@ async def upload_video(file: UploadFile = File(...)):
 
 @app.get("/get_file/{file_name}")
 def get_file(file_name: str):
-    file_path = "./static/" + file_name
+    if "tmp" in file_name:
+        file_path = "./static/tmp/" + file_name
+    else:
+        file_path = "./static/" + file_name
     return FileResponse(path=file_path)
 
 if __name__ == "__main__":
