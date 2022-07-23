@@ -1,6 +1,6 @@
 Project for Computer Vision course
 
-# This repo containing backend for web-app demo
+# This repo contains backend code for web-app demo
 
 ## How to run:
 
