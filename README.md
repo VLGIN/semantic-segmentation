@@ -10,6 +10,6 @@ cd src/app
 uvicorn services:app
 ```
 
-Backend server will run on the localhost at default port 3000.
+Backend server will run on the localhost at port 8001.
 
-## Docs for backend can be accessed at ```localhost:3000/docs```
+## Docs for backend can be accessed at ```localhost:8001/docs```
